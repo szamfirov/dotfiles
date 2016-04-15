@@ -1,4 +1,19 @@
-execute pathogen#infect()
+syntax on
+colorscheme desert
+
+set bg=dark
+set autoindent
+set nosmartindent
+set tabstop=5
+set shiftwidth=5
+set expandtab
+
+set cursorline
+hi cursorline cterm=none term=none
+autocmd WinEnter * setlocal cursorline
+autocmd WinLeave * setlocal nocursorline
+highlight CursorLine ctermbg=LightBlue
+
 if exists('$TMUX')
   set term=screen-256color
 endif
