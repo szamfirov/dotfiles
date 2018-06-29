@@ -1,0 +1,15 @@
+[user]
+    name =
+    email =
+    signingkey =
+[commit]
+    gpgsign = true
+[push]
+    default = simple
+[alias]
+    st = status
+    br = branch
+    co = checkout
+    pwb = symbolic-ref --short HEAD
+[gpg]
+    program = /usr/local/MacGPG2/bin/gpg2

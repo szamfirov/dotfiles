@@ -11,5 +11,3 @@
     br = branch
     co = checkout
     pwb = symbolic-ref --short HEAD
-[gpg]
-    program = /usr/local/bin/gpg2

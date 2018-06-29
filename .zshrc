@@ -28,10 +28,11 @@ vcs_info_wrapper() {
     echo "%{$fg[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
   fi
 }
-PROMPT='[$fg_bold[blue]%*$reset_color] $fg[cyan]%~$reset_color $(vcs_info_wrapper)%% '
+PROMPT='[$fg_bold[blue]%*$reset_color] $fg[cyan]%~$reset_color $(vcs_info_wrapper)
+%% '
 
 #aliases
-alias ls='gls --color=auto --group-directories-first'
+alias ls='`if ! command -v gls; then echo "ls"; fi` --color=auto --group-directories-first'
 alias rssh='ssh -l root'
 alias "ttplan"='terraform plan -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
 alias "ttapp"='terraform apply -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
@@ -56,9 +57,10 @@ bindkey '^E' end-of-line
 
 export PATH="$HOME/.pyenv/bin:$HOME/work/git:$PATH"
 eval "$(pyenv init -)"
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+eval "$(pyenv virtualenv-init -)"
 
 ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
 export ANSIBLE_VAULT_PASSWORD_FILE
+export EDITOR=vim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
