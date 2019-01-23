@@ -41,6 +41,17 @@ if [ "$OS_NAME" = "Darwin" ]; then
     fi
 fi
 
+# check if bash-completion is installed (Only for MacOS)
+if [ "$OS_NAME" = "Darwin" ]; then
+    # check if there is already installation in $(brew --prefix)/etc/bash_completion
+    if [ ! -f $(/usr/local/bin/brew --prefix)/etc/bash_completion ]; then
+        echo "Installing bash-completion..."
+        /usr/local/bin/brew install bash-completion
+    else
+        echo "bash-completion is already installed. Skipping..."
+    fi
+fi
+
 # check if fzf is installed
 if [ ! -f ~/.fzf.bash -o ! -f ~/.fzf.zsh ]; then
     echo "Installing fzf..."

@@ -1,5 +1,7 @@
 autoload -U colors && colors
 autoload -z edit-command-line
+autoload -Uz compinit && compinit
+autoload bashcompinit && bashcompinit
 zle -N edit-command-line
 
 HISTFILE=$HOME/.zsh_history
@@ -61,6 +63,7 @@ eval "$(pyenv virtualenv-init -)"
 
 ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
 export ANSIBLE_VAULT_PASSWORD_FILE
+export AWS_PROFILE=default
 export EDITOR=vim
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
