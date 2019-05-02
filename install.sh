@@ -52,6 +52,26 @@ if [ "$OS_NAME" = "Darwin" ]; then
     fi
 fi
 
+# check if coreutils is installed (Only for MacOS)
+if [ "$OS_NAME" = "Darwin" ]; then
+    if ! $(command -v gls > /dev/null); then
+        echo "Installing coreutils..."
+        /usr/local/bin/brew install coreutils
+    else
+        echo "coreutils is already installed. Skipping..."
+    fi
+fi
+
+# check if tmux is installed (Only for MacOS)
+if [ "$OS_NAME" = "Darwin" ]; then
+    if ! $(command -v tmux > /dev/null); then
+        echo "Installing tmux..."
+        /usr/local/bin/brew install tmux
+    else
+        echo "tmux is already installed. Skipping..."
+    fi
+fi
+
 # check if fzf is installed
 if [ ! -f ~/.fzf.bash -o ! -f ~/.fzf.zsh ]; then
     echo "Installing fzf..."
@@ -74,5 +94,7 @@ fi
 for FILE in .gitconfig .tmux.conf .vimrc .zshrc; do
     if [ -f ~/${FILE} ]; then
         confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
+    else
+        replace $FILE
     fi
 done
