@@ -3,6 +3,9 @@ set -euo pipefail
 
 OS_NAME=`uname -s`
 
+# Check if this is executed from Google Cloud Shell
+curl -f -q -H "Metadata-Flavor: Google" metadata/computeMetadata/v1/instance/description 2> /dev/null && OS_NAME="Cloud_Shell"
+
 confirm() {
     # call with a prompt string or use a default
     read -r -p "${1:-Are you sure? [y/N]} " response
@@ -27,8 +30,12 @@ replace() {
     if [ -f ${OS_NAME}/${FILE} ]; then
         FILE="${OS_NAME}/${FILE}"
     fi
-    cp $FILE ~/$1
-    echo "Copied ${FILE}."
+
+    if [ -f ~/$1 ]; then
+        rm ~/$1
+    fi
+    ln -s $FILE ~/$1
+    echo "Created a symbolic link to ${FILE}."
 }
 
 # check if homebrew is installed (Only for MacOS)

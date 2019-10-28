@@ -1,0 +1,17 @@
+[user]
+    name =
+    email =
+    #signingkey =
+[commit]
+    gpgsign = false
+[push]
+    default = simple
+[alias]
+    l  = log --pretty=oneline --decorate --abbrev-commit
+    la = log --pretty=medium --decorate --abbrev-commit --stat --all --walk-reflogs --relative --remotes
+    st = status
+    br = branch
+    co = checkout
+    pwb = symbolic-ref --short HEAD
+[credential]
+    helper = store
