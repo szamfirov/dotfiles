@@ -80,7 +80,7 @@ if [ "$OS_NAME" = "Darwin" ]; then
 fi
 
 # check if fzf is installed
-if [ ! -f ~/.fzf.bash -o ! -f ~/.fzf.zsh ]; then
+if [ ! -f ~/.fzf.bash ] && [ ! -f ~/.fzf.zsh ]; then
     echo "Installing fzf..."
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install --all
@@ -95,6 +95,19 @@ if [ ! -d ~/.pyenv ]; then
     git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
 else
     echo "pyenv is already installed. Skipping..."
+fi
+
+# check if the vim plugin folders exist
+if [ ! -d ~/.vim/autoload ]; then
+    mkdir -p ~/.vim/autoload
+fi
+if [ ! -d ~/.vim/bundle ]; then
+    mkdir -p ~/.vim/bundle
+fi
+
+# check if the pathogen vim plugin is installed
+if [ ! -f ~/.vim/autoload/pathogen.vim ]; then
+    curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 fi
 
 # populate config files
