@@ -13,3 +13,4 @@
     br = branch
     co = checkout
     pwb = symbolic-ref --short HEAD
+    hist = log --graph --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
