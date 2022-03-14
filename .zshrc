@@ -33,18 +33,32 @@ vcs_info_wrapper() {
 PROMPT='[$fg_bold[blue]%*$reset_color] $fg[cyan]%~$reset_color $(vcs_info_wrapper)
 %% '
 
+terraform_default_to_recursive() {
+  case $* in
+    fmt* ) shift 1; command ~/bin/terraform_1.0.1 fmt --recursive "$@" ;;
+    * ) command ~/bin/terraform_1.0.1 "$@" ;;
+  esac
+}
+
 #aliases
 alias ls='`if ! command -v gls; then echo "ls"; fi` --color=auto --group-directories-first'
 alias rssh='ssh -l root'
 alias "ttplan"='terraform plan -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
 alias "ttapp"='terraform apply -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
 alias sshadd='~/work/add-ssh-keys.sh'
+alias ssh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 alias tmux='TERM=xterm-256color tmux'
 
 alias pull='git pull origin $(git pwb)'
 alias push='git push origin $(git pwb)'
 alias master='git checkout master; git pull origin master'
+alias main='git checkout main; git pull origin main'
 alias gs='git status'
+
+alias k='kubectl'
+alias tf='terraform_default_to_recursive'
+alias terraform='terraform_default_to_recursive'
+alias share-terminal='ttyd -R -p 12345 -t rendererType=webgl tmux attach -t main || tmux new -s main'
 
 #edit command line
 bindkey '^[e' edit-command-line
@@ -65,5 +79,6 @@ ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
 export ANSIBLE_VAULT_PASSWORD_FILE
 export AWS_PROFILE=default
 export EDITOR=vim
+export GPG_TTY=$(tty)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
