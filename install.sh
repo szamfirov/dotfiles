@@ -98,16 +98,18 @@ else
 fi
 
 # check if the vim plugin folders exist
-if [ ! -d ~/.vim/autoload ]; then
-    mkdir -p ~/.vim/autoload
-fi
 if [ ! -d ~/.vim/bundle ]; then
     mkdir -p ~/.vim/bundle
 fi
 
 # check if the pathogen vim plugin is installed
 if [ ! -f ~/.vim/autoload/pathogen.vim ]; then
-    curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+    curl -fLSso ~/.vim/autoload/pathogen.vim --create-dirs https://tpo.pe/pathogen.vim
+fi
+
+# Check if the "plug" vim plugin is installed
+if [ ! -f ~/.vim/autoload/plug.vim ]; then
+    curl -fLSso ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
 
 # populate config files

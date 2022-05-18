@@ -71,14 +71,18 @@ bindkey '^R' history-incremental-search-backward
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
-export PATH="$HOME/.pyenv/bin:$HOME/work/git:$PATH"
+export EDITOR=vim
+export GPG_TTY=$(tty)
+
+export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
+export AWS_PROFILE=default
+export GOPATH=~/work/gopath
+export GOOGLE_APPLICATION_CREDENTIALS=
+export GOOGLE_ENCRYPTION_KEY=
+
+export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$HOME/.pyenv/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
-export ANSIBLE_VAULT_PASSWORD_FILE
-export AWS_PROFILE=default
-export EDITOR=vim
-export GPG_TTY=$(tty)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

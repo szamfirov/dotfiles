@@ -2,6 +2,12 @@
 " Author: szamfirov
 
 execute pathogen#infect()
+
+call plug#begin()
+Plug '~/.fzf'
+Plug 'preservim/nerdtree'
+call plug#end()
+
 colorscheme desert
 
 "------------------------------------------------------------
@@ -132,3 +138,5 @@ cmap w!! w !sudo tee > /dev/null %
 nmap ; :Buffers<CR>
 nmap <Leader>r :Tags<CR>
 nmap <Leader>t :Files<CR>
+
+nnoremap <C-t> :NERDTreeToggle<CR>
