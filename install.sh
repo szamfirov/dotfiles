@@ -31,10 +31,10 @@ replace() {
         FILE="${OS_NAME}/${FILE}"
     fi
 
-    if [ -f ~/$1 ]; then
+    if [ -f ~/$1 -o -L ~/$1 ]; then
         rm ~/$1
     fi
-    ln -s $FILE ~/$1
+    ln -s $(pwd)/$FILE ${HOME}/$1
     echo "Created a symbolic link to ${FILE}."
 }
 
@@ -51,9 +51,9 @@ fi
 # check if bash-completion is installed (Only for MacOS)
 if [ "$OS_NAME" = "Darwin" ]; then
     # check if there is already installation in $(brew --prefix)/etc/bash_completion
-    if [ ! -f $(/usr/local/bin/brew --prefix)/etc/bash_completion ]; then
+    if [ ! -f $(brew --prefix)/etc/bash_completion ]; then
         echo "Installing bash-completion..."
-        /usr/local/bin/brew install bash-completion
+        $(brew --prefix)/bin/brew install bash-completion
     else
         echo "bash-completion is already installed. Skipping..."
     fi
@@ -63,7 +63,7 @@ fi
 if [ "$OS_NAME" = "Darwin" ]; then
     if ! $(command -v gls > /dev/null); then
         echo "Installing coreutils..."
-        /usr/local/bin/brew install coreutils
+        $(brew --prefix)/bin/brew install coreutils
     else
         echo "coreutils is already installed. Skipping..."
     fi
@@ -73,7 +73,7 @@ fi
 if [ "$OS_NAME" = "Darwin" ]; then
     if ! $(command -v tmux > /dev/null); then
         echo "Installing tmux..."
-        /usr/local/bin/brew install tmux
+        $(brew --prefix)/bin/brew install tmux
     else
         echo "tmux is already installed. Skipping..."
     fi
@@ -114,7 +114,7 @@ fi
 
 # populate config files
 for FILE in .gitconfig .tmux.conf .vimrc .zshrc; do
-    if [ -f ~/${FILE} ]; then
+    if [ -f ~/${FILE} -o -L ~/${FILE} ]; then
         confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
     else
         replace $FILE
