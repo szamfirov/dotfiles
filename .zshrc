@@ -35,30 +35,10 @@ PROMPT='[$fg_bold[blue]%*$reset_color] $fg[cyan]%~$reset_color $(vcs_info_wrappe
 
 terraform_default_to_recursive() {
   case $* in
-    fmt* ) shift 1; command ~/bin/terraform_1.0.1 fmt --recursive "$@" ;;
-    * ) command ~/bin/terraform_1.0.1 "$@" ;;
+    fmt* ) shift 1; command ~/bin/terraform_1.2.5 fmt --recursive "$@" ;;
+    * ) command ~/bin/terraform_1.2.5 "$@" ;;
   esac
 }
-
-#aliases
-alias ls='`if ! command -v gls; then echo "ls"; fi` --color=auto --group-directories-first'
-alias rssh='ssh -l root'
-alias "ttplan"='terraform plan -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
-alias "ttapp"='terraform apply -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
-alias sshadd='~/work/add-ssh-keys.sh'
-alias ssh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-alias tmux='TERM=xterm-256color tmux'
-
-alias pull='git pull origin $(git pwb)'
-alias push='git push origin $(git pwb)'
-alias master='git checkout master; git pull origin master'
-alias main='git checkout main; git pull origin main'
-alias gs='git status'
-
-alias k='kubectl'
-alias tf='terraform_default_to_recursive'
-alias terraform='terraform_default_to_recursive'
-alias share-terminal='ttyd -R -p 12345 -t rendererType=webgl tmux attach -t main || tmux new -s main'
 
 #edit command line
 bindkey '^[e' edit-command-line
@@ -75,15 +55,47 @@ export TERM=xterm-color
 export EDITOR=vim
 export GPG_TTY=$(tty)
 
-export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
-export AWS_PROFILE=default
+#export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
+#export AWS_PROFILE=default
 export GOPATH=~/work/gopath
-export GOOGLE_APPLICATION_CREDENTIALS=
-export GOOGLE_ENCRYPTION_KEY=
+#export GOOGLE_APPLICATION_CREDENTIALS=
+#export GOOGLE_ENCRYPTION_KEY=
+export DOCKER_SOCKET="unix://${HOME}/.rd/docker.sock"
 
-export PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$HOME/.pyenv/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$HOME/.pyenv/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$HOME/.rd/bin:$PATH"
 
+if $(command -v pyenv > /dev/null); then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi
+
+# devcontainer
+if $(command -v devcontainer-info > /dev/null); then
+    PROMPT='[$fg_bold[blue]%*$reset_color] $fg_bold[red]DEVCONTAINER$reset_color $fg[cyan]%~$reset_color $(vcs_info_wrapper) %% '
+
+    POST_CREATE_CMD="$(cat .devcontainer/devcontainer.json | jq -r .postCreateCommand)"
+    eval $POST_CREATE_CMD
+
+    if [ -f ${HOME}/.git-credentials-to-be-copied ]; then
+        CURR_USER=$(whoami)
+        sudo cp ${HOME}/.git-credentials-to-be-copied ${HOME}/.git-credentials
+        sudo chown ${CURR_USER}: ${HOME}/.git-credentials
+    fi
+
+    [ -f ${ZSH}/oh-my-zsh.sh ] && source ${ZSH}/oh-my-zsh.sh
+
+    [ -d ${DEVCONTAINER_PROJECT_DIR}/environments ] && \
+        export GOOGLE_OAUTH_ACCESS_TOKEN=$(create-token --file $(find environments -name root.yaml))
+
+    if ! $(command -v vim > /dev/null); then
+        sudo apt update && sudo apt install -y vim
+    fi
+fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+[ -f ~/work/google-cloud-sdk/path.zsh.inc ] && source ~/work/google-cloud-sdk/path.zsh.inc
+
+# The next line enables shell command completion for gcloud.
+[ -f ~/work/google-cloud-sdk/completion.zsh.inc ] && source ~/work/google-cloud-sdk/completion.zsh.inc

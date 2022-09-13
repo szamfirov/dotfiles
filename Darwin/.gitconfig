@@ -16,3 +16,7 @@
     hist = log --graph --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
 [gpg]
     program = /usr/local/MacGPG2/bin/gpg2
+[credential]
+    helper = store
+[init]
+    defaultBranch = main

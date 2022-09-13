@@ -113,7 +113,7 @@ if [ ! -f ~/.vim/autoload/plug.vim ]; then
 fi
 
 # populate config files
-for FILE in .gitconfig .tmux.conf .vimrc .zshrc; do
+for FILE in .gitconfig .tmux.conf .vimrc .zlogin .zshenv .zshrc; do
     if [ -f ~/${FILE} -o -L ~/${FILE} ]; then
         confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
     else
