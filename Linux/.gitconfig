@@ -1,9 +1,9 @@
 [user]
     name =
     email =
-    signingkey =
+    #signingkey =
 [commit]
-    gpgsign = true
+    gpgsign = false
 [push]
     default = simple
 [alias]
@@ -14,3 +14,7 @@
     co = checkout
     pwb = symbolic-ref --short HEAD
     hist = log --graph --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
+[credential]
+    helper = store
+[init]
+    defaultBranch = main

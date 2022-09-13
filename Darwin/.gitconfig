@@ -1,9 +1,9 @@
 [user]
     name =
     email =
-    signingkey =
+    #signingkey =
 [commit]
-    gpgsign = true
+    gpgsign = false
 [push]
     default = simple
 [alias]
@@ -14,8 +14,8 @@
     co = checkout
     pwb = symbolic-ref --short HEAD
     hist = log --graph --pretty=format:\"%h %ad | %s%d [%an]\" --date=short
-[gpg]
-    program = /usr/local/MacGPG2/bin/gpg2
+#[gpg]
+#    program = /usr/local/MacGPG2/bin/gpg2
 [credential]
     helper = store
 [init]
