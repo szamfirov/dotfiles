@@ -33,10 +33,11 @@ vcs_info_wrapper() {
 PROMPT='[$fg_bold[blue]%*$reset_color] $fg[cyan]%~$reset_color $(vcs_info_wrapper)
 %% '
 
+# make sure terraform binary is in place, e.g. /usr/local/bin/terraform -> ~/bin/terraform_1.4.2
 terraform_default_to_recursive() {
   case $* in
-    fmt* ) shift 1; command ~/bin/terraform_1.2.5 fmt --recursive "$@" ;;
-    * ) command ~/bin/terraform_1.2.5 "$@" ;;
+    fmt* ) shift 1; command terraform fmt --recursive "$@" ;;
+    * ) command terraform "$@" ;;
   esac
 }
 
@@ -62,7 +63,7 @@ export GOPATH=~/work/gopath
 #export GOOGLE_ENCRYPTION_KEY=
 export DOCKER_SOCKET="unix://${HOME}/.rd/docker.sock"
 
-export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$HOME/.pyenv/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$HOME/.rd/bin:$PATH"
+export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/.pyenv/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$HOME/.rd/bin:$PATH"
 
 if $(command -v pyenv > /dev/null); then
     eval "$(pyenv init -)"
@@ -73,7 +74,7 @@ fi
 if $(command -v devcontainer-info > /dev/null); then
     PROMPT='[$fg_bold[blue]%*$reset_color] $fg_bold[red]DEVCONTAINER$reset_color $fg[cyan]%~$reset_color $(vcs_info_wrapper) %% '
 
-    POST_CREATE_CMD="$(cat .devcontainer/devcontainer.json | jq -r .postCreateCommand)"
+    POST_CREATE_CMD="$(cat .devcontainer/devcontainer.json | grep -v "^\/\/\|^\#" | jq -r .postCreateCommand)"
     eval $POST_CREATE_CMD
 
     if [ -f ${HOME}/.git-credentials-to-be-copied ]; then
@@ -84,11 +85,16 @@ if $(command -v devcontainer-info > /dev/null); then
 
     [ -f ${ZSH}/oh-my-zsh.sh ] && source ${ZSH}/oh-my-zsh.sh
 
-    [ -d ${DEVCONTAINER_PROJECT_DIR}/environments ] && \
-        export GOOGLE_OAUTH_ACCESS_TOKEN=$(create-token --file $(find environments -name root.yaml))
-
     if ! $(command -v vim > /dev/null); then
         sudo apt update && sudo apt install -y vim
+    fi
+
+    unalias terraform
+
+    if [ -d ${DEVCONTAINER_PROJECT_DIR}/environments ]; then
+        SERVICE_ACCOUNT=$(cat ${DEVCONTAINER_PROJECT_DIR}/environments/root.yaml | yq '.service_account')
+        echo Creating token for ${SERVICE_ACCOUNT}
+        export GOOGLE_OAUTH_ACCESS_TOKEN=$(create-token ${SERVICE_ACCOUNT})
     fi
 fi
 

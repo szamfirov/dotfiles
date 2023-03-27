@@ -88,14 +88,14 @@ else
     echo "fzf is already installed. Skipping..."
 fi
 
-# check if pyenv is installed
-if [ ! -d ~/.pyenv ]; then
-    echo "Installing pyenv..."
-    git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-    git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
-else
-    echo "pyenv is already installed. Skipping..."
-fi
+## check if pyenv is installed
+#if [ ! -d ~/.pyenv ]; then
+#    echo "Installing pyenv..."
+#    git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+#    git clone https://github.com/pyenv/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+#else
+#    echo "pyenv is already installed. Skipping..."
+#fi
 
 # check if the vim plugin folders exist
 if [ ! -d ~/.vim/bundle ]; then
@@ -113,7 +113,7 @@ if [ ! -f ~/.vim/autoload/plug.vim ]; then
 fi
 
 # populate config files
-for FILE in .gitconfig .tmux.conf .vimrc .zlogin .zshenv .zshrc; do
+for FILE in .gitconfig .tmux.conf .vimrc .zlogin .zsh_aliases .zshenv .zshrc; do
     if [ -f ~/${FILE} -o -L ~/${FILE} ]; then
         confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
     else

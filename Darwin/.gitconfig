@@ -20,3 +20,5 @@
     helper = store
 [init]
     defaultBranch = main
+[safe]
+	directory = *

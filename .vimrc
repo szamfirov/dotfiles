@@ -8,7 +8,7 @@ Plug '~/.fzf'
 Plug 'preservim/nerdtree'
 call plug#end()
 
-colorscheme desert
+
 
 "------------------------------------------------------------
 " Features
@@ -140,3 +140,5 @@ nmap <Leader>r :Tags<CR>
 nmap <Leader>t :Files<CR>
 
 nnoremap <C-t> :NERDTreeToggle<CR>
+
+colorscheme desert
