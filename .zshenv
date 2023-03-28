@@ -51,27 +51,30 @@ devcontainer() {
 }
 
 devcontainer_cli() {
+    FORCE_ARGS=
+    case "$1" in
+        -f) FORCE_ARGS="--remove-existing-container";;
+    esac
+
     # Don't run devcontainer if no .devcontainer folder is present
     [ `find ${PWD} -type d -name .devcontainer -maxdepth 1 | wc -l` -eq 0 ] && return
     # Rancher SSH auth socket (for SSH agent forwarding)
     SSH_AUTH_SOCK=$(rdctl shell printenv SSH_AUTH_SOCK)
     rdctl shell sudo chmod 775 $SSH_AUTH_SOCK
 
+    # Default to "vscode" as a user if there isn't one explicitly defined
     DEVCONTAINER_USER=$(cat .devcontainer/devcontainer.json | grep -v "^\/\|^\#" | jq -r '. | .remoteUser // "vscode"')
     DEVCONTAINER_USER_HOME=/home/${DEVCONTAINER_USER}
-    DEVCONTAINER_PROJECT_DIR=/workspaces/$(basename $PWD)
 
-    #node ~/work/projects/devcontainer-cli/devcontainer.js up \
     /usr/local/bin/devcontainer up \
+        $FORCE_ARGS \
         --build-no-cache \
         --mount "type=bind,source=$SSH_AUTH_SOCK,target=/tmp/ssh-agent.sock" \
         --mount "type=bind,source=${HOME}/.config,target=${DEVCONTAINER_USER_HOME}/.config" \
         --mount "type=bind,source=${HOME}/.gitconfig,target=${DEVCONTAINER_USER_HOME}/.gitconfig" \
         --dotfiles-repository "https://github.com/szamfirov/dotfiles" \
         --workspace-folder .
-    #node ~/work/projects/devcontainer-cli/devcontainer.js exec \
     /usr/local/bin/devcontainer exec \
-        --remote-env "DEVCONTAINER_PROJECT_DIR=${DEVCONTAINER_PROJECT_DIR}" \
         --remote-env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock" \
         --remote-env "EDITOR=vim" \
         --remote-env "ZSH=${DEVCONTAINER_USER_HOME}/.oh-my-zsh" \
