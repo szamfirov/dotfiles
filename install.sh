@@ -2,6 +2,14 @@
 set -euo pipefail
 
 OS_NAME=`uname -s`
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+FORCED=0
+
+while getopts ":f" flag; do
+    case "${flag}" in
+        f) FORCED=1;;
+    esac
+done
 
 # Check if this is executed from Google Cloud Shell
 curl -f -q -H "Metadata-Flavor: Google" metadata/computeMetadata/v1/instance/description 2> /dev/null && OS_NAME="Cloud_Shell"
@@ -34,7 +42,7 @@ replace() {
     if [ -f ~/$1 -o -L ~/$1 ]; then
         rm ~/$1
     fi
-    ln -s $(pwd)/$FILE ${HOME}/$1
+    ln -s ${SCRIPT_DIR}/$FILE ${HOME}/$1
     echo "Created a symbolic link to ${FILE}."
 }
 
@@ -114,7 +122,7 @@ fi
 
 # populate config files
 for FILE in .gitconfig .tmux.conf .vimrc .zlogin .zsh_aliases .zshenv .zshrc; do
-    if [ -f ~/${FILE} -o -L ~/${FILE} ]; then
+    if [ -f ~/${FILE} -o -L ~/${FILE} ] && [ $FORCED -eq 0 ]; then
         confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
     else
         replace $FILE
