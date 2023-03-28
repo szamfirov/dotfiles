@@ -72,6 +72,7 @@ devcontainer_cli() {
         --mount "type=bind,source=$SSH_AUTH_SOCK,target=/tmp/ssh-agent.sock" \
         --mount "type=bind,source=${HOME}/.config,target=${DEVCONTAINER_USER_HOME}/.config" \
         --mount "type=bind,source=${HOME}/.gitconfig,target=${DEVCONTAINER_USER_HOME}/.gitconfig" \
+        --mount "type=bind,source=${HOME}/.zshrc,target=${DEVCONTAINER_USER_HOME}/.zshrc" \
         --dotfiles-repository "https://github.com/szamfirov/dotfiles" \
         --workspace-folder .
     /usr/local/bin/devcontainer exec \

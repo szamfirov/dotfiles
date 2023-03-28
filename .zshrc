@@ -63,12 +63,7 @@ export GOPATH=~/work/gopath
 #export GOOGLE_ENCRYPTION_KEY=
 export DOCKER_SOCKET="unix://${HOME}/.rd/docker.sock"
 
-export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/.pyenv/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$HOME/.rd/bin:$PATH"
-
-if $(command -v pyenv > /dev/null); then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
+export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$HOME/.rd/bin:$PATH"
 
 # devcontainer
 if $(command -v devcontainer-info > /dev/null); then
@@ -88,8 +83,6 @@ if $(command -v devcontainer-info > /dev/null); then
     if ! $(command -v vim > /dev/null); then
         sudo apt update && sudo apt install -y vim
     fi
-
-    unalias terraform
 
     if [ -d ${DEVCONTAINER_PROJECT_DIR}/environments ]; then
         SERVICE_ACCOUNT=$(cat ${DEVCONTAINER_PROJECT_DIR}/environments/root.yaml | yq '.service_account')
