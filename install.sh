@@ -32,7 +32,7 @@ replace() {
     FILE=$1
     if [ -z $FILE ]; then
         echo "No arguments provided! Nothing to replace."
-        exit 1
+        return
     fi
 
     if [ -f ${OS_NAME}/${FILE} ]; then
@@ -40,7 +40,7 @@ replace() {
     fi
 
     if [ -f ~/$1 -o -L ~/$1 ]; then
-        rm ~/$1
+        rm ~/$1 || echo "Cannot remove file: ~/$1, manual action required." && return
     fi
     ln -s ${SCRIPT_DIR}/$FILE ${HOME}/$1
     echo "Created a symbolic link to ${FILE}."
