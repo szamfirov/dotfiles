@@ -123,7 +123,12 @@ fi
 # populate config files
 for FILE in .gitconfig .tmux.conf .vimrc .zlogin .zsh_aliases .zshenv .zshrc; do
     if [ -f ~/${FILE} -o -L ~/${FILE} ] && [ $FORCED -eq 0 ]; then
-        confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
+        # Check if this is executed from a devcontainer
+        if ! $(command -v devcontainer-info > /dev/null); then
+            confirm "Overwriting '${HOME}/${FILE}'. Are you sure? [y/N]" && replace $FILE
+        else
+            replace $FILE
+        fi
     else
         replace $FILE
     fi
