@@ -21,4 +21,4 @@
 [init]
     defaultBranch = main
 [safe]
-	directory = *
+    directory = *
