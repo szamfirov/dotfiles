@@ -6,7 +6,7 @@ cleanup_unused_docker_images() {
         echo $DOCKER_IMAGES_TO_REMOVE | xargs docker rmi -f
 }
 
-devcontainer() {
+devcontainer_cli_old() {
     # Don't run devcontainer if no .devcontainer folder is present
     [ `find ${PWD} -type d -name .devcontainer -maxdepth 1 | wc -l` -eq 0 ] && return
     # Rancher SSH auth socket (for SSH agent forwarding)
@@ -66,7 +66,7 @@ devcontainer_cli() {
     DEVCONTAINER_USER=$(cat .devcontainer/devcontainer.json | grep -v "^\/\|^\#" | jq -r '. | .remoteUser // "vscode"')
     DEVCONTAINER_USER_HOME=/home/${DEVCONTAINER_USER}
 
-    /usr/local/bin/devcontainer up \
+    devcontainer up \
         $FORCE_ARGS \
         --build-no-cache \
         --mount "type=bind,source=$SSH_AUTH_SOCK,target=/tmp/ssh-agent.sock" \
@@ -75,7 +75,7 @@ devcontainer_cli() {
         --mount "type=bind,source=${HOME}/.zshrc,target=${DEVCONTAINER_USER_HOME}/.zshrc" \
         --dotfiles-repository "https://github.com/szamfirov/dotfiles" \
         --workspace-folder .
-    /usr/local/bin/devcontainer exec \
+    devcontainer exec \
         --remote-env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock" \
         --remote-env "EDITOR=vim" \
         --remote-env "ZSH=${DEVCONTAINER_USER_HOME}/.oh-my-zsh" \
