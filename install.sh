@@ -121,7 +121,7 @@ if [ ! -f ~/.vim/autoload/plug.vim ]; then
 fi
 
 # populate config files
-for FILE in .zshrc .gitconfig .tmux.conf .vimrc .zlogin .zsh_aliases .zshenv; do
+for FILE in .zshrc .gitconfig .tmux.conf .vimrc .zlogin .zshenv; do
     if [ -f ~/${FILE} -o -L ~/${FILE} ] && [ $FORCED -eq 0 ]; then
         # Check if this is executed from a devcontainer
         if ! $(command -v devcontainer-info > /dev/null); then
