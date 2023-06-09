@@ -4,6 +4,8 @@
     #signingkey =
 [commit]
     gpgsign = false
+[pull]
+    rebase = true
 [push]
     default = simple
 [alias]
