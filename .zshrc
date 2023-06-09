@@ -67,7 +67,8 @@ export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual
 
 # devcontainer
 if $(command -v devcontainer-info > /dev/null); then
-    PROMPT='[$fg_bold[blue]%*$reset_color] $fg_bold[red]DEVCONTAINER$reset_color $fg[cyan]%~$reset_color $(vcs_info_wrapper) %% '
+    PROMPT='[$fg_bold[blue]%*$reset_color] $fg_bold[red]DEVCONTAINER$reset_color $fg[cyan]%~$reset_color $(vcs_info_wrapper)
+%% '
 
     POST_CREATE_CMD="$(cat .devcontainer/devcontainer.json | grep -v "^\/\/\|^\#" | jq -r .postCreateCommand)"
     eval $POST_CREATE_CMD
@@ -98,3 +99,6 @@ fi
 
 # The next line enables shell command completion for gcloud.
 [ -f ~/work/google-cloud-sdk/completion.zsh.inc ] && source ~/work/google-cloud-sdk/completion.zsh.inc
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
