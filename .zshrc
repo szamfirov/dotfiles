@@ -61,16 +61,19 @@ export GPG_TTY=$(tty)
 export GOPATH=~/work/gopath
 #export GOOGLE_APPLICATION_CREDENTIALS=
 #export GOOGLE_ENCRYPTION_KEY=
-export DOCKER_SOCKET="unix://${HOME}/.rd/docker.sock"
+#export DOCKER_SOCKET="unix://${HOME}/.rd/docker.sock"
 
-export PATH="$HOME/Library/Python/3.8/bin:/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$HOME/.rd/bin:$PATH"
+export PATH="/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$PATH"
 
 # devcontainer
 if $(command -v devcontainer-info > /dev/null); then
     PROMPT='[$fg_bold[blue]%*$reset_color] $fg_bold[red]DEVCONTAINER$reset_color $fg[cyan]%~$reset_color $(vcs_info_wrapper)
 %% '
 
-    POST_CREATE_CMD="$(cat .devcontainer/devcontainer.json | grep -v "^\/\/\|^\#" | jq -r .postCreateCommand)"
+    GIT_ROOT=$(git rev-parse --show-toplevel)
+    DEVCONTAINER_FILE=$(find ${GIT_ROOT} \( -type f -name devcontainer.json -o -type f -name .devcontainer.json \) -maxdepth 2)
+
+    POST_CREATE_CMD="$(cat ${DEVCONTAINER_FILE} | grep -v "^\/\/\|^\#" | jq -r .postCreateCommand)"
     eval $POST_CREATE_CMD
 
     if [ -f ${HOME}/.git-credentials-to-be-copied ]; then
@@ -85,11 +88,11 @@ if $(command -v devcontainer-info > /dev/null); then
         sudo apt update && sudo apt install -y vim
     fi
 
-    if [ -d ${DEVCONTAINER_PROJECT_DIR}/environments ]; then
-        SERVICE_ACCOUNT=$(cat ${DEVCONTAINER_PROJECT_DIR}/environments/root.yaml | yq '.service_account')
-        echo Creating token for ${SERVICE_ACCOUNT}
-        export GOOGLE_OAUTH_ACCESS_TOKEN=$(create-token ${SERVICE_ACCOUNT})
-    fi
+    #if [ -d environments ]; then
+    #    SERVICE_ACCOUNT=$(cat environments/root.yaml | yq '.service_account')
+    #    echo Creating token for ${SERVICE_ACCOUNT}
+    #    export GOOGLE_OAUTH_ACCESS_TOKEN=$(create-token ${SERVICE_ACCOUNT})
+    #fi
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

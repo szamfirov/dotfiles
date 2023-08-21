@@ -23,37 +23,52 @@ devcontainer_cli() {
         -f) FORCE_ARGS="--remove-existing-container";;
     esac
 
-    # Don't run devcontainer if no .devcontainer folder is present
-    [ `find ${PWD} -type d -name .devcontainer -maxdepth 1 | wc -l` -eq 0 ] && return
+    GIT_ROOT=$(git rev-parse --show-toplevel)
+    DEVCONTAINER_FILE=$(find ${GIT_ROOT} \( -type f -name devcontainer.json -o -type f -name .devcontainer.json \) -maxdepth 2)
+
+    # Don't run devcontainer if no devcontainer.json file is present
+    [ -z "$DEVCONTAINER_FILE" ] && return
+
     # Rancher SSH auth socket (for SSH agent forwarding)
-    if $(command -v rdctl > /dev/null); then
-        SSH_AUTH_SOCK=$(rdctl shell printenv SSH_AUTH_SOCK)
-        rdctl shell sudo chmod 775 $SSH_AUTH_SOCK
-    else
-        eval $(ssh-agent -s)
-        ssh-add
-    fi
+    #export SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
+    #if ! $(command -v rdctl > /dev/null); then
+    #    eval $(ssh-agent -s)
+    #    ssh-add
+    #fi
 
     # Default to "vscode" as a user if there isn't one explicitly defined
-    DEVCONTAINER_USER=$(cat .devcontainer/devcontainer.json | grep -v "^\/\|^\#" | jq -r '. | .remoteUser // "vscode"')
+    DEVCONTAINER_USER=$(cat ${DEVCONTAINER_FILE} | grep -v "^\/\|^\#" | jq -r '. | .remoteUser // "vscode"')
     DEVCONTAINER_USER_HOME=/home/${DEVCONTAINER_USER}
 
     devcontainer up \
         $FORCE_ARGS \
         --build-no-cache \
-        --mount "type=bind,source=$SSH_AUTH_SOCK,target=/tmp/ssh-agent.sock" \
+        --workspace-mount-consistency consistent \
         --mount "type=bind,source=${HOME}/.config,target=${DEVCONTAINER_USER_HOME}/.config" \
         --mount "type=bind,source=${HOME}/.gitconfig,target=${DEVCONTAINER_USER_HOME}/.gitconfig" \
         --mount "type=bind,source=${HOME}/.git-credentials,target=${DEVCONTAINER_USER_HOME}/.git-credentials" \
+        --mount "type=bind,source=${HOME}/.ssh,target=${DEVCONTAINER_USER_HOME}/.ssh" \
         --mount "type=bind,source=${HOME}/.zshrc,target=${DEVCONTAINER_USER_HOME}/.zshrc" \
+        --remote-env "EDITOR=vim" \
+        --remote-env "SHELL=zsh" \
+        --remote-env "ZSH=${DEVCONTAINER_USER_HOME}/.oh-my-zsh" \
         --dotfiles-repository "https://github.com/szamfirov/dotfiles" \
-        --workspace-folder .
+        --update-remote-user-uid-default on \
+        --workspace-folder $GIT_ROOT
+        #--mount "type=bind,source=${SSH_AUTH_SOCK},target=/tmp/ssh-agent.sock" \
+        #--remote-env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock" \
 
     devcontainer exec \
         --remote-env "EDITOR=vim" \
         --remote-env "SHELL=zsh" \
-        --remote-env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock" \
         --remote-env "ZSH=${DEVCONTAINER_USER_HOME}/.oh-my-zsh" \
-        --workspace-folder . \
-        /bin/zsh
+        --workspace-folder $GIT_ROOT \
+        zsh || \
+    devcontainer exec \
+        --remote-env "EDITOR=vim" \
+        --remote-env "SHELL=zsh" \
+        --remote-env "ZSH=${DEVCONTAINER_USER_HOME}/.oh-my-zsh" \
+        --workspace-folder $GIT_ROOT \
+        bash
+        #--remote-env "SSH_AUTH_SOCK=/tmp/ssh-agent.sock" \
 }
