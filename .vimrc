@@ -1,14 +1,13 @@
 " URL: https://github.com/szamfirov/dotfiles/blob/master/.vimrc
 " Author: szamfirov
 
-execute pathogen#infect()
-
 call plug#begin()
 Plug '~/.fzf'
 Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'vim-airline/vim-airline'
+Plug 'hashivim/vim-terraform'
 call plug#end()
-
-
 
 "------------------------------------------------------------
 " Features
@@ -117,17 +116,18 @@ set cursorline
 hi cursorline cterm=none term=none
 autocmd WinEnter * setlocal cursorline
 autocmd WinLeave * setlocal nocursorline
-highlight CursorLine ctermbg=LightGrey
+highlight CursorLine ctermbg=DarkGrey
+highlight LineNr ctermfg=Grey
 
 " VimDiff
 if &diff
     colorscheme darkblue
     "hi DiffText   cterm=none ctermfg=Black ctermbg=Red gui=none guifg=Black guibg=Red
     "hi DiffChange cterm=none ctermfg=Black ctermbg=LightMagenta gui=none guifg=Black guibg=LightMagenta
-    highlight DiffAdd    term=bold         ctermbg=darkgreen ctermfg=white    cterm=bold guibg=DarkGreen  guifg=White    gui=bold
-    highlight DiffText   term=reverse,bold ctermbg=red       ctermfg=white    cterm=bold guibg=DarkRed    guifg=White   gui=bold
-    highlight DiffChange term=bold         ctermbg=black     ctermfg=white    cterm=bold guibg=Black      guifg=White    gui=bold
-    highlight DiffDelete term=none         ctermbg=darkblue  ctermfg=darkblue cterm=none guibg=DarkBlue   guifg=DarkBlue gui=none
+    highlight DiffAdd    term=bold         ctermbg=darkgreen ctermfg=white    cterm=bold guibg=DarkGreen guifg=White    gui=bold
+    highlight DiffText   term=reverse,bold ctermbg=red       ctermfg=white    cterm=bold guibg=DarkRed   guifg=White    gui=bold
+    highlight DiffChange term=bold         ctermbg=black     ctermfg=white    cterm=bold guibg=Black     guifg=White    gui=bold
+    highlight DiffDelete term=none         ctermbg=darkblue  ctermfg=darkblue cterm=none guibg=DarkBlue  guifg=DarkBlue gui=none
     highlight CursorLine ctermbg=none
 endif
 
@@ -141,4 +141,25 @@ nmap <Leader>t :Files<CR>
 
 nnoremap <C-t> :NERDTreeToggle<CR>
 
-colorscheme desert
+"colorscheme desert
+
+let g:terraform_fmt_on_save=1
+
+"------------------------------------------------------------
+" NERDTree config
+let g:NERDTreeShowHidden = 1
+
+" Start NERDTree and put the cursor back in the other window.
+"autocmd VimEnter * NERDTree | wincmd p
+
+" Start NERDTree, unless a file or session is specified, eg. vim -S session_file.vim.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') && v:this_session == '' | NERDTree | endif
+
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | wincmd p | endif
+
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif

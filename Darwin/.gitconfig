@@ -1,6 +1,6 @@
 [user]
-    name =
-    email =
+    name = Svetlin Zamfirov
+    email = 4711683+szamfirov@users.noreply.github.com
     #signingkey =
 [commit]
     gpgsign = false
@@ -24,3 +24,6 @@
     defaultBranch = main
 [safe]
     directory = *
+
+[includeIf "gitdir:~/work/"]
+    path = ~/.gitconfig-work

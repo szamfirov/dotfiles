@@ -55,6 +55,7 @@ bindkey '^E' end-of-line
 export TERM=xterm-color
 export EDITOR=vim
 export GPG_TTY=$(tty)
+export XDG_CONFIG_HOME="${HOME}/.config"
 
 #export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vault_pass"
 #export AWS_PROFILE=default
@@ -63,7 +64,7 @@ export GOPATH=~/work/gopath
 #export GOOGLE_ENCRYPTION_KEY=
 #export DOCKER_SOCKET="unix://${HOME}/.rd/docker.sock"
 
-export PATH="/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/work/git:$GOPATH/bin:$HOME/bin:$PATH"
+export PATH="/usr/local/go/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$HOME/work/git:$HOME/miniconda3/bin:$GOPATH/bin:$HOME/bin:$PATH"
 
 # devcontainer
 if $(command -v devcontainer-info > /dev/null); then
@@ -105,3 +106,19 @@ fi
 
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+export PATH=$PATH:$HOME/.local/bin
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/svetlin/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/svetlin/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/svetlin/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/svetlin/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<

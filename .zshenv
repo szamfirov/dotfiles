@@ -4,7 +4,7 @@ alias "ttplan"='terraform plan -var aws_access_key=$AWS_ACCESS_KEY -var aws_secr
 alias "ttapp"='terraform apply -var aws_access_key=$AWS_ACCESS_KEY -var aws_secret_key=$AWS_SECRET_KEY'
 alias sshadd='~/work/add-ssh-keys.sh'
 alias ssh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-alias tmux='TERM=xterm-256color tmux'
+#alias tmux='TERM=xterm-256color tmux'
 
 alias pull='git pull origin $(git pwb)'
 alias push='git push origin $(git pwb)'
